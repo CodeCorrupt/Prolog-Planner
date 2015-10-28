@@ -58,20 +58,20 @@ member_state(S, [_|T]) :-	member_state(S, T).
 *       [Preconditions], 
 *       [Moves]). */
 move(pickup(X), 
-        [handempty, clear(X), on(X, Y)],
-		[del(handempty), del(clear(X)), del(on(X, Y)), add(clear(Y)),	add(holding(X))]).
+        [handempty, clear(X), on(X, Y, Z), handroom(Z)],
+		[del(handempty), del(clear(X)), del(on(X, Y, Z)), add(clear(Y)),	add(holding(X))]).
 
 move(pickup(X), 
-        [handempty, clear(X), ontable(X)],
-		[del(handempty), del(clear(X)), del(ontable(X)), add(holding(X))]).
+        [handempty, clear(X), ontable(X, Z), handroom(Z)],
+		[del(handempty), del(clear(X)), del(ontable(X, Z)), add(holding(X))]).
 
 move(putdown(X), 
-        [holding(X)],
-		[del(holding(X)), add(ontable(X)), add(clear(X)), add(handempty)]).
+        [holding(X), handroom(Z)],
+		[del(holding(X)), add(ontable(X, Z)), add(clear(X)), add(handempty)]).
 
 move(stack(X, Y), 
-        [holding(X), clear(Y)],
-		[del(holding(X)), del(clear(Y)), add(handempty), add(on(X, Y)), add(clear(X))]).
+        [holding(X), clear(Y), handroom(Z)],
+		[del(holding(X)), del(clear(Y)), add(handempty), add(on(X, Y, Z)), add(clear(X))]).
 
 move(goroom(1), 
         [handroom(2)],
