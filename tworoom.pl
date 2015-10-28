@@ -11,7 +11,7 @@
 :- module( planner,
 	   [
 	       plan/4,change_state/3,conditions_met/2,member_state/2,
-	       move/3,go/2,test/0
+	       move/4,go/2,test/0
 	   ]).
 
 /* Load the utilities provided */
@@ -24,7 +24,7 @@ plan(State, Goal, _, Moves) :-	equal_set(State, Goal),
 				reverse_print_stack(Moves).
 plan(State, Goal, Been_list, Moves) :-
                 /* Blindly make a move */
-				move(Name, Preconditions, Actions),
+				move(Name, Preconditions, Actions, _),
                 /* Check if the preconditions for that move are true */
 				conditions_met(Preconditions, State),
                 /* If you made it this far then the move is possible */
@@ -59,27 +59,28 @@ member_state(S, [_|T]) :-	member_state(S, T).
 *       [Moves]). */
 move(pickup(X), 
         [handempty, clear(X), on(X, Y, Z), handroom(Z)],
-		[del(handempty), del(clear(X)), del(on(X, Y, Z)), add(clear(Y)),	add(holding(X))]).
+		[del(handempty), del(clear(X)), del(on(X, Y, Z)), add(clear(Y)),	add(holding(X))],
+        true).
 
 move(pickup(X), 
         [handempty, clear(X), ontable(X, Z), handroom(Z)],
-		[del(handempty), del(clear(X)), del(ontable(X, Z)), add(holding(X))]).
+		[del(handempty), del(clear(X)), del(ontable(X, Z)), add(holding(X))],
+        true).
 
 move(putdown(X), 
         [holding(X), handroom(Z)],
-		[del(holding(X)), add(ontable(X, Z)), add(clear(X)), add(handempty)]).
+		[del(holding(X)), add(ontable(X, Z)), add(clear(X)), add(handempty)],
+        true).
 
 move(stack(X, Y), 
         [holding(X), clear(Y), handroom(Z)],
-		[del(holding(X)), del(clear(Y)), add(handempty), add(on(X, Y, Z)), add(clear(X))]).
+		[del(holding(X)), del(clear(Y)), add(handempty), add(on(X, Y, Z)), add(clear(X))],
+        true).
 
-move(goroom(1), 
-        [handroom(2)],
-        [del(handroom(2)), add(handroom(1))]).
-
-move(goroom(2),
-        [handroom(1)],
-        [del(handroom(1)), add(handroom(2))]).
+move(goroom(X), 
+        [handroom(Y)],
+        [del(handroom(X)), add(handroom(Y))],
+        (X \= Y)).
 
 /* run commands */
 go(S, G) :- plan(S, G, [S], []).
