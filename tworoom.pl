@@ -11,7 +11,7 @@
 :- module( planner,
 	   [
 	       plan/4,change_state/3,conditions_met/2,member_state/2,
-	       move/3,go/2,test/0,test2/0
+	       move/3,go/2,test/0
 	   ]).
 
 /* Load the utilities provided */
@@ -84,9 +84,5 @@ move(goroom(2),
 /* run commands */
 go(S, G) :- plan(S, G, [S], []).
 
-test :- go([handempty, ontable(b), ontable(c), on(a, b), clear(c), clear(a)],
-	          [handempty, ontable(c), on(a,b), on(b, c), clear(a)]).
-
-test2 :- go([handempty, ontable(b), ontable(c), on(a, b), clear(c), clear(a)],
-	          [handempty, ontable(a), ontable(b), on(c, b), clear(a), clear(c)]).
-
+test :- go([handempty, ontable(b,1), on(a, b, 1), clear(a), handroom(1)],
+            [handempty, ontable(b,2), on(a, b, 2), clear(a), handroom(1)]).
